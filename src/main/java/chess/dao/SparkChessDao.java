@@ -16,10 +16,10 @@ import chess.domain.piece.kind.Piece;
 import chess.dto.BoardDto;
 import chess.dto.UserDto;
 
-public class ChessDao {
+public class SparkChessDao {
     private final SQLConnection sqlConnection;
 
-    public ChessDao(SQLConnection sqlConnection) {
+    public SparkChessDao(SQLConnection sqlConnection) {
         this.sqlConnection = sqlConnection;
     }
 

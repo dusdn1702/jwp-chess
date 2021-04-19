@@ -14,7 +14,12 @@ public class SpringChessApplication {
 	}
 
 	@GetMapping("/")
-	public String index() {
-		return "index";
+	public String start() {
+		return "start";
+	}
+
+	@GetMapping(path = "/adduser")
+	public String postAddUser() {
+		return "signup";
 	}
 }
