@@ -1,5 +1,6 @@
 package chess.service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -77,11 +78,20 @@ public class ChessService {
     }
 
     @Transactional
-    public int postRooms(String title) {
+    public int getRoom(String title) throws SQLException {
         if (chessRepository.findIdByTitle(title) == null) {
-            chessRepository.insertRoom(title);
+            throw new SQLException("방이 존재하지 않습니다.");
         }
         return Integer.parseInt(chessRepository.findIdByTitle(title));
+    }
+
+    @Transactional
+    public int postRoom(String title) throws SQLException {
+        if (chessRepository.findIdByTitle(title) != null) {
+            throw new SQLException("이미 존재하는 방 이름입니다.");
+        }
+        chessRepository.insertRoom(title);
+        return getRoom(title);
     }
 
     private ChessGame makeChessGame(int roomId) {
@@ -91,6 +101,5 @@ public class ChessService {
 
         return new ChessGame(board, isPlaying, turn);
     }
-
 }
 

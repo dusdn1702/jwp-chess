@@ -16,7 +16,8 @@ public class ChessAdvice {
 
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<String> sqlExceptionHandle(SQLException e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("sql 에러가 발생했습니다.");
+        System.out.println("~~~~~~~~~"+e.getMessage());
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)

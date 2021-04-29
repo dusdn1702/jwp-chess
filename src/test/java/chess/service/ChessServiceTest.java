@@ -2,6 +2,7 @@ package chess.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -49,10 +50,6 @@ public class ChessServiceTest {
     @Test
     @DisplayName("체스 게임 방이 이미 존재하는 경우, 해당 방 정보와 기물 정보를 가져온다.")
     void addRoomTest2() {
-        jdbcTemplate.update("INSERT INTO room (id, title, turn, playing_flag) VALUES (?, ?, ?, ?)", 1, "hello", "BLACK",
-            true);
-        jdbcTemplate.update("INSERT INTO pieces (room_id, piece_name, position) VALUES (?, ?, ?)", 1, "p", "a2");
-
         PiecesResponseDto piecesResponseDto = new PiecesResponseDto(chessService.postPieces(1));
 
         assertTrue(piecesResponseDto.isPlaying());
@@ -62,8 +59,8 @@ public class ChessServiceTest {
 
     @Test
     @DisplayName("기물을 이동시키고 기물 정보 데이터를 업데이트 한다.")
-    void putBoardTest() {
-        int roomId =chessService.postRooms("3");
+    void putBoardTest() throws SQLException {
+        int roomId =chessService.postRoom("3");
         chessService.postPieces(roomId);
         ChessGame chessGame = chessService.putBoard(roomId, new Position("a2"), new Position("a4"));
         for (Map.Entry<Position, Piece> piece : chessGame.pieces().entrySet()) {
@@ -78,8 +75,8 @@ public class ChessServiceTest {
 
     @Test
     @DisplayName("체스 게임 점수를 계산한다.")
-    void getScoreTest() {
-        int roomId =chessService.postRooms("test");
+    void getScoreTest() throws SQLException {
+        int roomId =chessService.postRoom("test");
         chessService.postPieces(roomId);
 
         assertEquals(38, chessService.getScore(roomId, "BLACK").getValue());
@@ -88,12 +85,12 @@ public class ChessServiceTest {
 
     @Test
     @DisplayName("체스 게임 방 목록을 구한다.")
-    void getRoomsTest() {
-        chessService.postRooms("hi");
-        chessService.postRooms("hello");
-        chessService.postRooms("i");
-        chessService.postRooms("am");
-        chessService.postRooms("sally");
+    void getRoomsTest() throws SQLException {
+        chessService.postRoom("hi");
+        chessService.postRoom("hello");
+        chessService.postRoom("i");
+        chessService.postRoom("am");
+        chessService.postRoom("sally");
 
         assertEquals(Arrays.asList("hi", "hello", "i", "am", "sally"), chessService.getRooms());
     }

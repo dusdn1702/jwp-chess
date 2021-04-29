@@ -1,5 +1,7 @@
 package chess.controller;
 
+import java.sql.SQLException;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,9 +34,18 @@ public class ChessApiController {
         return new RoomsResponseDto(chessService.getRooms());
     }
 
+    @GetMapping(value = "/room")
+    public int getRoom(@RequestParam String title) throws SQLException {
+        return chessService.getRoom(title);
+    }
+
     @PostMapping(value = "/room")
-    public int postRoom(@RequestParam String title) {
-        return chessService.postRooms(title);
+    public int postRoom(@RequestParam String title) throws SQLException {
+        try {
+            return chessService.postRoom(title);
+        } catch (SQLException e) {
+            throw new SQLException("같은 이름은 등록할 수 없습니다.");
+        }
     }
 
     @PostMapping(value = "/pieces/{roomId}")
