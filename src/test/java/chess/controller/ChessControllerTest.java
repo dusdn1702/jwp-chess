@@ -10,12 +10,14 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 
 import chess.dto.request.MoveRequestDto;
 import io.restassured.RestAssured;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application.properties")
+@Sql("classpath:initSetting.sql")
 public class ChessControllerTest {
 
     @LocalServerPort
@@ -24,10 +26,6 @@ public class ChessControllerTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
-        RestAssured.given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().post("/api/room?title=1")
-            .then().log().all();
     }
 
     @DisplayName("메인 화면 연결 확인")
@@ -50,7 +48,7 @@ public class ChessControllerTest {
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body("roomNames.size()", is(1));
+            .body("roomNames", contains("hi"));
     }
 
     @DisplayName("기물 가져오는거 확인")
@@ -62,17 +60,26 @@ public class ChessControllerTest {
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body("piecesInBoard.size()", is(64));
+            .body("piecesInBoard.size()", is(1));
     }
 
     @DisplayName("보드 갱신 확인")
     @Test
     void putBoard() {
+        RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().post("/api/room?title=hello")
+            .then().log().all();
+        RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().post("/api/pieces/2")
+            .then().log().all();
+
         MoveRequestDto moveRequestDto = new MoveRequestDto("a2", "a4");
         RestAssured.given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(moveRequestDto)
-            .when().put("/api/board/1")
+            .when().put("/api/board/2")
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -87,6 +94,6 @@ public class ChessControllerTest {
             .when().get("/api/score/1/WHITE")
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
-            .body("score.toString()", equalTo("38.0"));
+            .body("score.toString()", equalTo("1.0"));
     }
 }

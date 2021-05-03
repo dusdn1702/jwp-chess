@@ -20,9 +20,9 @@ import chess.domain.piece.Piece;
 import chess.domain.piece.PieceFactory;
 import chess.domain.position.Position;
 
+@Sql("classpath:initSetting.sql")
 @JdbcTest
 @TestPropertySource("classpath:application.properties")
-@Sql("classpath:initSetting.sql")
 public class ChessRepositoryTest {
 
     private ChessRepository chessRepository;
@@ -40,7 +40,7 @@ public class ChessRepositoryTest {
     void findOnePieceByRoomId() {
         int roomId = Integer.parseInt(chessRepository.findIdByTitle("hi"));
 
-        assertEquals(0, chessRepository.findPiecesByRoomId(roomId).size());
+        assertEquals(1, chessRepository.findPiecesByRoomId(roomId).size());
     }
 
     @Test
@@ -50,7 +50,7 @@ public class ChessRepositoryTest {
         String pieceName = "r";
         String position = "a7";
         chessRepository.insertPieceByRoomId(roomId, pieceName, position);
-        assertEquals(1, chessRepository.findPiecesByRoomId(roomId).size());
+        assertEquals(2, chessRepository.findPiecesByRoomId(roomId).size());
         assertEquals("r", chessRepository.findPiecesByRoomId(roomId).get(new Position("a7")).getName());
     }
 
@@ -65,7 +65,8 @@ public class ChessRepositoryTest {
     @DisplayName("새로운 방을 추가한다.")
     void insertNewRoom() {
         assertDoesNotThrow(() -> chessRepository.insertRoom("hello"));
-        assertEquals(2, chessRepository.findAllRoomName().size());
+        assertDoesNotThrow(() -> chessRepository.insertRoom("fuck"));
+        assertEquals(3, chessRepository.findAllRoomName().size());
         assertEquals("hello", chessRepository.findAllRoomName().get(1));
     }
 
@@ -113,7 +114,7 @@ public class ChessRepositoryTest {
         String position = "a5";
 
         assertDoesNotThrow(() -> chessRepository.insertPieceByRoomId(roomId, pieceName, position));
-        assertEquals(1, chessRepository.findPiecesByRoomId(roomId).size());
+        assertEquals(2, chessRepository.findPiecesByRoomId(roomId).size());
         assertEquals("k", chessRepository.findPiecesByRoomId(roomId).get(new Position("a5")).getName());
     }
 
@@ -140,6 +141,7 @@ public class ChessRepositoryTest {
     void findId() {
         String roomId = chessRepository.findIdByTitle("hi");
 
+        System.out.println(chessRepository.findAllRoomName());
         assertEquals("1", roomId);
     }
 }

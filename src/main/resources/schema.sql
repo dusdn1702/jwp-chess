@@ -1,4 +1,5 @@
 ALTER DATABASE chess DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
 CREATE TABLE IF NOT EXISTS pieces
 (
     room_id    bigint,

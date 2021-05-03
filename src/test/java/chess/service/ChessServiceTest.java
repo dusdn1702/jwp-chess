@@ -86,7 +86,6 @@ public class ChessServiceTest {
     @Test
     @DisplayName("체스 게임 방 목록을 구한다.")
     void getRoomsTest() throws SQLException {
-        chessService.postRoom("hi");
         chessService.postRoom("hello");
         chessService.postRoom("i");
         chessService.postRoom("am");

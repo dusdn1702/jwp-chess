@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS room;
+DROP TABLE IF EXISTS pieces;
 CREATE TABLE IF NOT EXISTS pieces
 (
     room_id    bigint,
@@ -13,4 +15,4 @@ CREATE TABLE IF NOT EXISTS room
     PRIMARY KEY (id)
     );
 INSERT INTO room (title, turn, playing_flag) values ('hi', 'WHITE', true);
-INSERT INTO pieces (room_id, piece_name, position) values (1, 'p', 'a8');
+INSERT INTO pieces (room_id, piece_name, position) values (1, 'p', 'a2');
